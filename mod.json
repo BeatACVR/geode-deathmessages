@@ -1,0 +1,31 @@
+{
+	"geode": "4.10.0",
+	"gd": {
+		"win": "2.2074",
+		"android": "2.2074",
+		"mac": "2.2074",
+		"ios": "2.2074"
+	},
+	"id": "beat.death_message",
+	"name": "Death Message",
+	"version": "v1.0.0",
+	"developer": "Beat",
+	"description": "Shows a customized message when you die.",
+	"tags": [
+		"gameplay",
+		"customization",
+		"interface",
+		"offline"
+	],
+	"resources": {
+		"files": [
+			"resources/**/*.txt"
+		]
+	},
+	"settings": {
+		"folder-button": {
+			"type": "custom:folder-button",
+			"name": "Open config folder"
+		}
+	}
+}

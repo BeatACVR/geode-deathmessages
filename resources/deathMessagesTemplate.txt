@@ -1,0 +1,14 @@
+# Write each message on a separate line.
+# If a message is too long, it may go off screen.
+# Each message is chosen at random and won't be the same as the previous message.
+
+You died. Again.
+Unfortunately, you died.
+Stop messing up.
+Skill issue.
+I blame lag.
+You can do better than that.
+Focus.
+You learn more with each try. Keep going!
+No pain, no gain.
+How did you even die there?
