@@ -8,7 +8,7 @@
 	},
 	"id": "beat.death_message",
 	"name": "Death Message",
-	"version": "v1.0.0",
+	"version": "v1.0.1",
 	"developer": "Beat",
 	"description": "Shows a customized message when you die.",
 	"tags": [
@@ -17,6 +17,9 @@
 		"interface",
 		"offline"
 	],
+	"links": {
+		"source": "https://github.com/BeatACVR/geode-deathmessages"
+	},
 	"resources": {
 		"files": [
 			"resources/**/*.txt"
@@ -29,3 +32,4 @@
 		}
 	}
 }
+
