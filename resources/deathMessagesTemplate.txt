@@ -12,3 +12,9 @@ Focus.
 You learn more with each try. Keep going!
 No pain, no gain.
 How did you even die there?
+
+# If a message ends with \#, it will only have a chance to appear at a certain percentage.
+# Any number that is higher than 100, lower than 0, or contains anything except a whole number can be shown at any time.
+# The following message will only appear when dying at 99%.
+
+99%... that's rough. \99

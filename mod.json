@@ -1,5 +1,5 @@
 {
-	"geode": "5.0.0",
+	"geode": "5.7.1",
 	"gd": {
 		"win": "2.2081",
 		"android": "2.2081",
@@ -8,7 +8,7 @@
 	},
 	"id": "beat.death_message",
 	"name": "Death Message",
-	"version": "v1.1.0",
+	"version": "v1.2.0",
 	"developer": "Beat",
 	"description": "Shows a customized message when you die.",
 	"tags": [

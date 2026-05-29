@@ -2,6 +2,7 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 #include <random>
+#include <cmath>
 
 using namespace geode::prelude;
 
@@ -28,25 +29,75 @@ namespace rngutils
 }
 
 class $modify(myPlayLayer, PlayLayer) {
+    struct Phrase {
+        std::string text;
+        std::optional<int> percentConstraint;
+    };
+
 	struct Fields {
-		std::vector<std::string> m_phrases;
+		std::vector<Phrase> m_phrases;
+        geode::Ref<Notification> m_notification;
 	};
-	
+
+    static std::optional<int> extractPercentSuffix(std::string& line) {
+        size_t bsPos = line.rfind('\\');
+        if (bsPos == std::string::npos) return std::nullopt;
+
+        std::string suffix = line.substr(bsPos + 1);
+        if (suffix.empty()) return std::nullopt;
+        if (suffix.find('.') != std::string::npos) return std::nullopt;
+        if (suffix[0] == '-') return std::nullopt;
+        if (!std::all_of(suffix.begin(), suffix.end(), ::isdigit)) return std::nullopt;
+
+        int value = utils::numFromString<int>(suffix).unwrapOr(-2);
+
+        if (value < 0 || value > 100) return std::nullopt;
+        size_t stripPos = bsPos;
+        while (stripPos > 0 && line[stripPos - 1] == ' ') --stripPos;
+        line = line.substr(0, stripPos);
+
+        return value;
+    }
+
 	void destroyPlayer(PlayerObject* player, GameObject* object) {
-		// no repeat messages
-        static size_t lastPhraseIndex = std::numeric_limits<size_t>::max();
+        if (m_fields->m_notification) m_fields->m_notification->cancel();
+
         if (!m_fields->m_phrases.empty() && object != m_anticheatSpike) {
-            size_t phraseIndex;
-            if (m_fields->m_phrases.size() == 1) {
-                phraseIndex = 0;
-            } else {
-                do {
-                    phraseIndex = rngutils::rng(size_t(0), m_fields->m_phrases.size() - 1);
-                } while (phraseIndex == lastPhraseIndex);
+            int currentPercent = static_cast<int>(std::floor(getCurrentPercent()));
+            bool isPlatformer = player->m_isPlatformer;
+
+            std::vector<size_t> eligible;
+            eligible.reserve(m_fields->m_phrases.size());
+            for (size_t i = 0; i < m_fields->m_phrases.size(); ++i) {
+                const Phrase& p = m_fields->m_phrases[i];
+                if (p.percentConstraint.has_value()) {
+                    if (isPlatformer) continue;
+                    if (*p.percentConstraint != currentPercent) continue;
+                }
+                eligible.push_back(i);
             }
-            lastPhraseIndex = phraseIndex;
-            
-            Notification::create(m_fields->m_phrases[phraseIndex], CCSprite::createWithSpriteFrameName("GJ_deleteIcon_001.png"))->show();
+
+            if (!eligible.empty()) {
+                static size_t lastPhraseIndex = std::numeric_limits<size_t>::max();
+
+                size_t chosenIdx;
+                if (eligible.size() == 1) {
+                    chosenIdx = eligible[0];
+                } else {
+                    size_t pick;
+                    do {
+                        pick = rngutils::rng(size_t(0), eligible.size() - 1);
+                    } while (eligible[pick] == lastPhraseIndex);
+                    chosenIdx = eligible[pick];
+                }
+                lastPhraseIndex = chosenIdx;
+
+                m_fields->m_notification = Notification::create(
+                    m_fields->m_phrases[chosenIdx].text,
+                    CCSprite::createWithSpriteFrameName("GJ_deleteIcon_001.png")
+                );
+                m_fields->m_notification->show();
+            }
         }
         destroyPlayer(player, object);
 	}
@@ -68,7 +119,11 @@ class $modify(myPlayLayer, PlayLayer) {
 			line = line.substr(firstNonSpace);
 
 			if (line.size() >= 2 && line[0] == '#' && line[1] == ' ') continue;
-			m_fields->m_phrases.push_back(line);
+
+            Phrase p;
+            p.percentConstraint = extractPercentSuffix(line);
+            p.text = line;
+            m_fields->m_phrases.push_back(std::move(p));
 		}
 	}
 };
