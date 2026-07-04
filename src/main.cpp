@@ -62,7 +62,10 @@ class $modify(myPlayLayer, PlayLayer) {
 	void destroyPlayer(PlayerObject* player, GameObject* object) {
         if (m_fields->m_notification) m_fields->m_notification->cancel();
 
-        if (!m_fields->m_phrases.empty() && object != m_anticheatSpike) {
+        bool disableInPractice = Mod::get()->getSettingValue<bool>("non-practice-button");
+        bool shouldShowMessage = !(disableInPractice && m_isPracticeMode);
+
+        if (shouldShowMessage && !m_fields->m_phrases.empty() && object != m_anticheatSpike) {
             int currentPercent = static_cast<int>(std::floor(getCurrentPercent()));
             bool isPlatformer = player->m_isPlatformer;
 

@@ -8,7 +8,7 @@
 	},
 	"id": "beat.death_message",
 	"name": "Death Message",
-	"version": "v1.2.0",
+	"version": "v1.3.0",
 	"developer": "Beat",
 	"description": "Shows a customized message when you die.",
 	"tags": [
@@ -26,6 +26,12 @@
 		]
 	},
 	"settings": {
+		"non-practice-button": {
+			"type": "bool",
+			"name": "Don't show messages in practice",
+			"description": "Disables the display of death messages during practice",
+			"default": false
+		},
 		"folder-button": {
 			"type": "custom:folder-button",
 			"name": "Open config folder"
